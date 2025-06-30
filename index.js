@@ -28,8 +28,15 @@ async function run() {
     const productCollection = client.db("emaJohnDB").collection("products");
 
     app.get("/products", async (req, res) => {
-      console.log('pagination query',req.query)
-      const result = await productCollection.find().toArray();
+      const page = Number(req.query.page);
+      const size = Number(req.query.size);
+      console.log("pagination query", page, size);
+
+      const result = await productCollection
+        .find()
+        .skip(page * size)
+        .limit(size)
+        .toArray();
       res.send(result);
     });
 
